@@ -34,7 +34,16 @@ const requireOwnership = customError.requireOwnership;
 //jwt
 const requireToken = passport.authenticate('bearer',{session:false})
 //index 
-router.get('/events',requireToken,(req,res,next)=> {
+router.get('/events',(req,res,next)=> {
+    Event.find()
+    .then(events=> {
+        res.status(200).json({events:events})
+    })
+    .catch(next)
+})
+
+//index for my own events
+router.get('/myevents',requireToken,(req,res,next)=> {
     const userId = req.user._id
     Event.find({'owner':userId})
     .then(events=> {
@@ -42,6 +51,7 @@ router.get('/events',requireToken,(req,res,next)=> {
     })
     .catch(next)
 })
+
 //create
 router.post('/events',requireToken,(req,res,next)=> {
     const userId = req.user._id
@@ -55,11 +65,10 @@ router.post('/events',requireToken,(req,res,next)=> {
     .catch(next)
 })
 //show
-router.get('/events/:id',requireToken,(req,res,next)=> {
+router.get('/events/:id',(req,res,next)=> {
     const eventId = req.params.id
     Event.findById(eventId)
     .then(event=> {
-        requireOwnership(req,event)
         res.status(200).json({event:event})
     })
     .catch(next)
