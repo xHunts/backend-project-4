@@ -1,23 +1,3 @@
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
-//DELETE THIS TO AVOID THE THE COCFLICT
-//MESHO PART 
 
 //import express 
 const express = require ('express')
@@ -78,15 +58,21 @@ router.get('/events/:id',(req,res,next)=> {
 router.post('/events/:id/registers',requireToken,(req,res,next)=> {
     const eventId = req.params.id
     const userId = req.user._id
-    Event.findById(eventId)
-    .then(event=> {
-        event.registers = userId
-        return event.save()
+    Event.update({
+        _id:eventId
+    },{
+        $push: {registers:userId}
     })
-    .then((event)=> {
+    .then(() => res.sendStatus(204))
+    // Event.findById(eventId)
+    // .then(event=> {
+    //     event.registers = userId
+    //     return event.save()
+    // })
+    // .then((event)=> {
 
-        res.status(200).json({event:event})
-    })
+    //     res.status(200).json({event:event})
+    // })
     .catch(next)
 })
 
@@ -96,7 +82,7 @@ router.patch('/events/:id',requireToken,(req,res,next)=> {
     const updatedEvent = req.body.event
     Event.findByIdAndUpdate(eventId,updatedEvent)
     .then((event)=> {
-        requireOwnership(req,event)
+        // requireOwnership(req,event)
         res.sendStatus(204)
     })
     .catch(next)
@@ -106,7 +92,7 @@ router.delete('/events/:id',requireToken,(req,res,next)=> {
     const eventId = req.params.id
     Event.findById(eventId)
     .then((event)=> {
-        requireOwnership(req,event)
+        // requireOwnership(req,event)
         return event.remove()
     })
     .then(()=> res.sendStatus(204))
