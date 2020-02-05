@@ -64,17 +64,23 @@ router.post('/events/:id/registers',requireToken,(req,res,next)=> {
         $push: {registers:userId}
     })
     .then(() => res.sendStatus(204))
-    // Event.findById(eventId)
-    // .then(event=> {
-    //     event.registers = userId
-    //     return event.save()
-    // })
-    // .then((event)=> {
-
-    //     res.status(200).json({event:event})
-    // })
     .catch(next)
 })
+
+//remove a new registers to event 
+router.delete('/events/:id/registers',requireToken,(req,res,next)=> {
+    const eventId = req.params.id
+    const userId = req.user._id
+  
+    Event.update({
+        _id:eventId
+    },{
+        $pull: {registers:userId}
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
+
 
 //update
 router.patch('/events/:id',requireToken,(req,res,next)=> {
